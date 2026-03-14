@@ -17,6 +17,8 @@ Monorepo for FlowHub MVP:
 - [docs/delivery/06-后续任务清单.md](/mnt/f/tool/FlowHub/docs/delivery/06-%E5%90%8E%E7%BB%AD%E4%BB%BB%E5%8A%A1%E6%B8%85%E5%8D%95.md): 当前未闭环事项与执行顺序
 - [docs/delivery/07-发布前检查清单.md](/mnt/f/tool/FlowHub/docs/delivery/07-%E5%8F%91%E5%B8%83%E5%89%8D%E6%A3%80%E6%9F%A5%E6%B8%85%E5%8D%95.md): 发布前最终检查
 - [docs/delivery/08-基线提交建议.md](/mnt/f/tool/FlowHub/docs/delivery/08-%E5%9F%BA%E7%BA%BF%E6%8F%90%E4%BA%A4%E5%BB%BA%E8%AE%AE.md): 首个基线提交建议
+- [docs/delivery/09-发布版本与标签方案.md](/mnt/f/tool/FlowHub/docs/delivery/09-%E5%8F%91%E5%B8%83%E7%89%88%E6%9C%AC%E4%B8%8E%E6%A0%87%E7%AD%BE%E6%96%B9%E6%A1%88.md): 版本号、分支与 git tag 建议
+- [docs/delivery/10-首轮上线参数清单.md](/mnt/f/tool/FlowHub/docs/delivery/10-%E9%A6%96%E8%BD%AE%E4%B8%8A%E7%BA%BF%E5%8F%82%E6%95%B0%E6%B8%85%E5%8D%95.md): 首轮生产环境参数核对表
 
 ## Quick start
 
