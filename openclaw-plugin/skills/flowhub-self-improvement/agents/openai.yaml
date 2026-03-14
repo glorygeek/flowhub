@@ -1,0 +1,4 @@
+interface:
+  display_name: "FlowHub Self Improvement"
+  short_description: "Record sanitized internal learnings and postmortems."
+  default_prompt: "Use $flowhub-self-improvement in maintainer sessions to capture sanitized learnings without exposing secrets or customer data."

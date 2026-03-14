@@ -1,0 +1,25 @@
+{
+  "name": "flowhub-client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "node ./scripts/build-static.mjs",
+    "dev": "tsx src/main.ts --spec ./sample-workflow.json",
+    "dev:ui": "node ./scripts/build-static.mjs --watch",
+    "run-workflow": "tsx src/main.ts",
+    "run-plan": "tsx src/main.ts --plan ./sample-run-plan.json --skip-telemetry",
+    "typecheck": "tsc --noEmit",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "2.2.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.2.5",
+    "@tauri-apps/cli-win32-x64-msvc": "^2.2.5",
+    "@types/node": "22.10.2",
+    "tsx": "4.19.2",
+    "typescript": "5.7.2"
+  }
+}

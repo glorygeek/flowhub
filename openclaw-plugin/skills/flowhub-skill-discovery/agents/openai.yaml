@@ -1,0 +1,4 @@
+interface:
+  display_name: "FlowHub Skill Discovery"
+  short_description: "Discover trusted FlowHub skills without remote installs."
+  default_prompt: "Use $flowhub-skill-discovery to find trusted FlowHub skills, compare candidates, and keep execution separate."

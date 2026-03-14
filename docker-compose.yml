@@ -1,0 +1,44 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: flowhub-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:///./data/flowhub.db}
+      FLOWHUB_API_KEY: ${FLOWHUB_API_KEY:-dev-flowhub-key}
+      CLAWHUB_SYNC_ENABLED: ${CLAWHUB_SYNC_ENABLED:-true}
+      CLAWHUB_SYNC_ON_STARTUP: ${CLAWHUB_SYNC_ON_STARTUP:-false}
+      CLAWHUB_SYNC_CRON: ${CLAWHUB_SYNC_CRON:-0 3 * * *}
+      CLAWHUB_SYNC_TIMEZONE: ${CLAWHUB_SYNC_TIMEZONE:-Asia/Shanghai}
+      AI_ENABLED: ${AI_ENABLED:-false}
+      AI_BASE_URL: ${AI_BASE_URL:-https://api.openai.com/v1}
+      AI_MODEL: ${AI_MODEL:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_TIMEOUT_SECONDS: ${AI_TIMEOUT_SECONDS:-30}
+      AI_DEFAULT_TEMPERATURE: ${AI_DEFAULT_TEMPERATURE:-0.2}
+      AI_THINKING_ENABLED: ${AI_THINKING_ENABLED:-false}
+      PLANNER_AI_ENABLED: ${PLANNER_AI_ENABLED:-false}
+      PLANNER_AI_BASE_URL: ${PLANNER_AI_BASE_URL:-https://api.openai.com/v1}
+      PLANNER_AI_MODEL: ${PLANNER_AI_MODEL:-}
+      PLANNER_AI_API_KEY: ${PLANNER_AI_API_KEY:-}
+    volumes:
+      - flowhub_sqlite:/app/data
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: flowhub-frontend
+    restart: unless-stopped
+    environment:
+      FLOWHUB_API_BASE_URL: ${FLOWHUB_API_BASE_URL:-http://backend:8000/api/v1}
+      FLOWHUB_API_KEY: ${FLOWHUB_API_KEY:-dev-flowhub-key}
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      - backend
+
+volumes:
+  flowhub_sqlite:

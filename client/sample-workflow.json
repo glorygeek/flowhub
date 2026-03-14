@@ -1,0 +1,24 @@
+{
+  "id": "sample-flow-1",
+  "name": "Sample local workflow",
+  "inputs": {"source": "demo"},
+  "nodes": [
+    {
+      "id": "node_1",
+      "name": "collect",
+      "skill_ref": "local.collect",
+      "inputs": {"value": 1}
+    },
+    {
+      "id": "node_2",
+      "name": "transform",
+      "skill_ref": "local.transform",
+      "inputs": {"value": 2}
+    }
+  ],
+  "edges": [{"from_node": "node_1", "to_node": "node_2"}],
+  "outputs": {"result": "object"},
+  "risk_level": "low",
+  "retry_policy": {"max_retries": 1},
+  "confirm_points": ["node_1"]
+}

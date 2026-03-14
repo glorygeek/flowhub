@@ -1,0 +1,20 @@
+{
+  "tools": [
+    {
+      "command": "echo-tool.cmd",
+      "path": "./tools/echo-tool.cmd",
+      "sha256": "a364519d003d0034469b27381293c1fa5132f1ba5c94add2d18a2c172bc1a769",
+      "version": "2026.03.13",
+      "signer": "flowhub-release-bot",
+      "signer_fingerprint": "sha256:flowhub-release-bot-2026q1",
+      "release_batch": "stable-2026q1",
+      "published_at": "2026-03-13T00:00:00Z",
+      "expires_at": "2027-03-13T00:00:00Z",
+      "revoked": true,
+      "revoked_by": "flowhub-security",
+      "revocation_ticket": "SEC-2026-0313-01",
+      "revocation_reason": "Security drill: sample manifest entry intentionally revoked.",
+      "description": "Revoked sample shell tool used to verify manifest revocation handling."
+    }
+  ]
+}

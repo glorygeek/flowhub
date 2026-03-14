@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf '{"tool":"echo-tool","args":['
+first=1
+for arg in "$@"; do
+  escaped=${arg//\"/\\\"}
+  if [ "$first" -eq 0 ]; then
+    printf ','
+  fi
+  first=0
+  printf '"%s"' "$escaped"
+done
+printf ']}'

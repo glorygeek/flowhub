@@ -1,0 +1,4 @@
+interface:
+  display_name: "FlowHub Skill Vetter"
+  short_description: "Review skill safety posture before promotion."
+  default_prompt: "Use $flowhub-skill-vetter to review a FlowHub skill's security posture and return an operator-facing approval recommendation."

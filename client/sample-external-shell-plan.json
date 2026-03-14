@@ -1,0 +1,44 @@
+{
+  "workflow_spec": {
+    "id": "sample-external-shell-plan",
+    "name": "Sample external shell tool plan",
+    "inputs": {
+      "request_text": "Run a signed local shell tool through the client sandbox"
+    },
+    "nodes": [
+      {
+        "id": "node_1",
+        "name": "Run signed echo tool",
+        "skill_ref": "local.shell-echo",
+        "inputs": {
+          "external_tool": {
+            "kind": "shell_command",
+            "command": "./tools/echo-tool.cmd",
+            "args": [
+              "flowhub",
+              "sandbox",
+              "ok"
+            ],
+            "timeout_seconds": 10
+          }
+        }
+      }
+    ],
+    "edges": [],
+    "outputs": {
+      "result": "json"
+    },
+    "risk_level": "low"
+  },
+  "client_execution_guidance": {
+    "mode": "client_fetch_and_compose",
+    "ai_runtime_owner": "client",
+    "summary": "Execute a manifest-bound local shell tool.",
+    "steps": [
+      "Enable the client tool sandbox.",
+      "Point CLIENT_TOOL_MANIFEST_PATH at the sample manifest.",
+      "Run the client against this plan and inspect the returned stdout payload."
+    ],
+    "skill_targets": []
+  }
+}

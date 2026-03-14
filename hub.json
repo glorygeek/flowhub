@@ -1,0 +1,276 @@
+{
+  "project": "OpenClaw FlowHub Platform",
+  "description": "从零开始构建 OpenClaw FlowHub MVP 平台，包括 Skill/Recipe/Workflow 管理、Planner API、客户端 Runtime、前端控制台，以及 AI 辅助开发。",
+  "tasks": [
+    {
+      "id": "init_01",
+      "module": "project setup",
+      "file_path": "./",
+      "goal": "创建项目文件夹结构 backend/frontend/client/codex-scripts",
+      "input": "无",
+      "output": "完整文件夹骨架",
+      "priority": "high"
+    },
+    {
+      "id": "init_02",
+      "module": "project setup",
+      "file_path": "./",
+      "goal": "初始化 Git 仓库并创建 .gitignore",
+      "input": "无",
+      "output": "Git 仓库和忽略文件",
+      "priority": "high"
+    },
+    {
+      "id": "init_03",
+      "module": "project setup",
+      "file_path": "./",
+      "goal": "创建 Python 虚拟环境和 Node.js 环境",
+      "input": "无",
+      "output": "venv 或 conda + Node 环境",
+      "priority": "high"
+    },
+    {
+      "id": "init_04",
+      "module": "dependencies",
+      "file_path": "backend/requirements.txt & frontend/package.json & client/package.json",
+      "goal": "安装依赖库 FastAPI, Pydantic, SQLAlchemy, Alembic, uvicorn, Next.js, Tailwind, ESLint, Tauri",
+      "input": "requirements.txt, package.json",
+      "output": "依赖可用",
+      "priority": "high"
+    },
+    {
+      "id": "schema_01",
+      "module": "backend/models",
+      "file_path": "backend/app/schemas/skill_contract.py",
+      "goal": "定义 Skill Contract Pydantic 模型，包括名称、类别、输入输出、风险等级、状态、版本",
+      "input": "Skill 字段列表",
+      "output": "Pydantic Skill Contract 模型类",
+      "priority": "high"
+    },
+    {
+      "id": "schema_02",
+      "module": "backend/models",
+      "file_path": "backend/app/schemas/workflow_spec.py",
+      "goal": "定义 Workflow Spec Pydantic 模型，包括节点、边、输入输出、模板引用、风险等级",
+      "input": "Workflow Spec 字段列表",
+      "output": "Pydantic Workflow Spec 模型类",
+      "priority": "high"
+    },
+    {
+      "id": "schema_03",
+      "module": "backend/models",
+      "file_path": "backend/app/schemas/recipe_schema.py",
+      "goal": "定义 Recipe 模板结构，包含场景分类、节点骨架、风险等级、适用 Skill 类别",
+      "input": "Recipe 字段列表",
+      "output": "Pydantic Recipe 模型类",
+      "priority": "medium"
+    },
+    {
+      "id": "schema_04",
+      "module": "backend/models",
+      "file_path": "backend/app/models/skill.py",
+      "goal": "生成 Skill ORM 模型（SQLAlchemy）并映射到默认 SQLite，可切换到其他数据库",
+      "input": "Skill Contract Pydantic 模型",
+      "output": "Skill ORM 表",
+      "priority": "high"
+    },
+    {
+      "id": "schema_05",
+      "module": "backend/models",
+      "file_path": "backend/app/models/recipe.py & backend/app/models/workflow.py",
+      "goal": "生成 Recipe 与 Workflow ORM 表并迁移",
+      "input": "Recipe/Workflow Pydantic 模型",
+      "output": "ORM 表 + Alembic migration",
+      "priority": "high"
+    },
+    {
+      "id": "api_01",
+      "module": "backend/api",
+      "file_path": "backend/app/main.py",
+      "goal": "初始化 FastAPI 主应用",
+      "input": "无",
+      "output": "FastAPI app 运行入口",
+      "priority": "high"
+    },
+    {
+      "id": "api_02",
+      "module": "backend/api",
+      "file_path": "backend/app/api/skills.py",
+      "goal": "实现 Skill CRUD API（GET/POST/PUT/DELETE）",
+      "input": "Skill ORM 模型",
+      "output": "Skill CRUD 接口",
+      "priority": "high"
+    },
+    {
+      "id": "api_03",
+      "module": "backend/api",
+      "file_path": "backend/app/api/recipes.py",
+      "goal": "实现 Recipe CRUD API",
+      "input": "Recipe ORM 模型",
+      "output": "Recipe CRUD 接口",
+      "priority": "medium"
+    },
+    {
+      "id": "api_04",
+      "module": "backend/api",
+      "file_path": "backend/app/api/workflows.py",
+      "goal": "实现 Workflow CRUD API",
+      "input": "Workflow ORM 模型",
+      "output": "Workflow CRUD 接口",
+      "priority": "high"
+    },
+    {
+      "id": "api_05",
+      "module": "backend/api",
+      "file_path": "backend/app/api/planner.py",
+      "goal": "实现 Planner API：输入 request_text + client_capabilities，输出 Workflow Spec JSON",
+      "input": "Skill/Recipe/Adapter 数据",
+      "output": "Planner 接口返回 Workflow Spec",
+      "priority": "high"
+    },
+    {
+      "id": "api_06",
+      "module": "backend/api",
+      "file_path": "backend/app/api/telemetry.py",
+      "goal": "实现 Telemetry 接口，接收客户端执行结果",
+      "input": "客户端执行 JSON",
+      "output": "存储 Telemetry 数据",
+      "priority": "medium"
+    },
+    {
+      "id": "fe_01",
+      "module": "frontend/pages",
+      "file_path": "frontend/app/page.tsx",
+      "goal": "创建前端首页，显示运行请求入口与工作流预览",
+      "input": "API 返回数据",
+      "output": "Next.js 页面",
+      "priority": "high"
+    },
+    {
+      "id": "fe_02",
+      "module": "frontend/pages",
+      "file_path": "frontend/app/skills/page.tsx",
+      "goal": "展示 Skill 列表及 CRUD 功能",
+      "input": "Skill CRUD API",
+      "output": "可操作 Skill 列表页",
+      "priority": "high"
+    },
+    {
+      "id": "fe_03",
+      "module": "frontend/pages",
+      "file_path": "frontend/app/recipes/page.tsx",
+      "goal": "展示 Recipe 列表及 CRUD 功能",
+      "input": "Recipe CRUD API",
+      "output": "可操作 Recipe 列表页",
+      "priority": "medium"
+    },
+    {
+      "id": "fe_04",
+      "module": "frontend/pages",
+      "file_path": "frontend/app/workflows/page.tsx",
+      "goal": "显示 Workflow 模板及 Planner 生成的 Workflow Spec",
+      "input": "Workflow API + Planner API",
+      "output": "Workflow 可视化页面",
+      "priority": "medium"
+    },
+    {
+      "id": "client_01",
+      "module": "client/runtime",
+      "file_path": "client/src/runtime/workflow_loader.ts",
+      "goal": "实现客户端 Workflow Spec Loader，读取 JSON 并解析节点",
+      "input": "Workflow Spec JSON",
+      "output": "节点对象数组",
+      "priority": "high"
+    },
+    {
+      "id": "client_02",
+      "module": "client/runtime",
+      "file_path": "client/src/runtime/executor.ts",
+      "goal": "实现节点模拟执行器并生成执行结果",
+      "input": "节点对象数组",
+      "output": "节点执行结果 + Telemetry JSON",
+      "priority": "high"
+    },
+    {
+      "id": "client_03",
+      "module": "client/main",
+      "file_path": "client/src/main.ts",
+      "goal": "集成 Workflow Loader 与 Executor，并将执行结果回传 Telemetry API",
+      "input": "Workflow Spec JSON",
+      "output": "执行并发送 Telemetry",
+      "priority": "high"
+    },
+    {
+      "id": "codex_01",
+      "module": "codex-scripts",
+      "file_path": "codex-scripts/generate_models.py",
+      "goal": "调用 Codex 自动生成 Pydantic / SQLAlchemy 模型",
+      "input": "Skill / Recipe / Workflow 字段列表",
+      "output": "模型模板代码",
+      "priority": "high"
+    },
+    {
+      "id": "codex_02",
+      "module": "codex-scripts",
+      "file_path": "codex-scripts/generate_api.py",
+      "goal": "调用 Codex 生成 FastAPI CRUD API 模板",
+      "input": "模型类",
+      "output": "CRUD API 文件",
+      "priority": "high"
+    },
+    {
+      "id": "codex_03",
+      "module": "codex-scripts",
+      "file_path": "codex-scripts/generate_frontend.py",
+      "goal": "调用 Codex 生成前端列表页组件模板",
+      "input": "字段 + API 返回示例",
+      "output": "React/Next.js 页面组件",
+      "priority": "medium"
+    },
+    {
+      "id": "test_01",
+      "module": "tests",
+      "file_path": "backend/tests/test_models.py",
+      "goal": "生成后端模型单元测试",
+      "input": "Pydantic + ORM 模型",
+      "output": "可运行单元测试",
+      "priority": "high"
+    },
+    {
+      "id": "test_02",
+      "module": "tests",
+      "file_path": "backend/tests/test_api.py",
+      "goal": "生成后端 API 单元测试",
+      "input": "CRUD API / Planner API",
+      "output": "可运行 API 测试",
+      "priority": "high"
+    },
+    {
+      "id": "deploy_01",
+      "module": "deployment",
+      "file_path": "docker-compose.yml",
+      "goal": "配置 Docker + SQLite + Redis + FastAPI 环境",
+      "input": "Dockerfile / ORM / API",
+      "output": "可运行 MVP Docker 环境",
+      "priority": "medium"
+    },
+    {
+      "id": "deploy_02",
+      "module": "deployment",
+      "file_path": "frontend/",
+      "goal": "部署前端控制台 (Next.js dev / Vercel)",
+      "input": "Next.js 页面 + API 接口",
+      "output": "可访问前端控制台",
+      "priority": "medium"
+    },
+    {
+      "id": "deploy_03",
+      "module": "deployment",
+      "file_path": "client/",
+      "goal": "客户端打包测试 (Tauri) 并执行 MVP Workflow",
+      "input": "Workflow Spec + Executor",
+      "output": "本地客户端可运行并回传 Telemetry",
+      "priority": "medium"
+    }
+  ]
+}

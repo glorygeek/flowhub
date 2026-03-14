@@ -1,0 +1,56 @@
+{
+  "id": "flowhub-openclaw",
+  "name": "FlowHub OpenClaw Bridge",
+  "description": "Expose FlowHub planning and confirmation tools to an OpenClaw agent.",
+  "version": "0.1.0",
+  "skills": ["skills/flowhub-orchestrator", "skills/flowhub-skill-discovery"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiBaseUrl": {
+        "type": "string",
+        "minLength": 1
+      },
+      "apiKey": {
+        "type": "string",
+        "minLength": 1
+      },
+      "timeoutMs": {
+        "type": "integer",
+        "minimum": 1000,
+        "default": 20000
+      },
+      "defaultExecutionMode": {
+        "type": "string",
+        "enum": ["remote", "local"],
+        "default": "remote"
+      },
+      "defaultOutputFormat": {
+        "type": "string",
+        "enum": ["json", "csv", "xlsx", "pdf", "markdown"],
+        "default": "markdown"
+      }
+    },
+    "required": ["apiBaseUrl", "apiKey"]
+  },
+  "uiHints": {
+    "apiBaseUrl": {
+      "label": "FlowHub API Base URL",
+      "placeholder": "http://127.0.0.1:8000/api/v1"
+    },
+    "apiKey": {
+      "label": "FlowHub API Key",
+      "sensitive": true
+    },
+    "timeoutMs": {
+      "label": "Timeout (ms)"
+    },
+    "defaultExecutionMode": {
+      "label": "Default Execution Mode"
+    },
+    "defaultOutputFormat": {
+      "label": "Default Output Format"
+    }
+  }
+}

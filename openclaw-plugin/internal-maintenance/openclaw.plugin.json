@@ -1,0 +1,10 @@
+{
+  "id": "flowhub-openclaw-internal",
+  "name": "FlowHub Internal Maintenance",
+  "description": "Internal-only OpenClaw plugin for sanitized FlowHub maintenance and learning capture.",
+  "version": "0.1.0",
+  "skills": [
+    "../skills/flowhub-self-improvement",
+    "../skills/flowhub-skill-vetter"
+  ]
+}

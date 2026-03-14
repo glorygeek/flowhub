@@ -1,0 +1,266 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f4f1e8;
+  --card: #fffdf7;
+  --card-strong: #f2ede0;
+  --ink: #1b1a17;
+  --accent: #155e75;
+  --accent-soft: #d7ecef;
+  --muted: #6b6a64;
+  --line: #ddd5c2;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top right, rgba(21, 94, 117, 0.14), transparent 28%),
+    radial-gradient(circle at top left, rgba(190, 120, 65, 0.16), transparent 34%),
+    var(--bg);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.app-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 12px 28px rgba(27, 26, 23, 0.06);
+}
+
+.subpanel {
+  background: var(--card-strong);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.site-nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.9fr);
+  gap: 16px;
+}
+
+.hero-copy,
+.hero-card {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 20px;
+  background: linear-gradient(180deg, rgba(255, 253, 247, 0.96), rgba(242, 237, 224, 0.92));
+  box-shadow: 0 16px 32px rgba(27, 26, 23, 0.06);
+}
+
+.hero-copy h2 {
+  margin: 6px 0 12px 0;
+  font-size: clamp(28px, 5vw, 48px);
+  line-height: 1.02;
+  max-width: 12ch;
+}
+
+.hero-text {
+  max-width: 62ch;
+  color: #31302b;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-actions a,
+.site-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.stack-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.empty-state {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(215, 236, 239, 0.32), rgba(255, 253, 247, 0.74));
+}
+
+.plain-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #cbbfa4;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+button {
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--accent);
+}
+
+button.card-button {
+  width: 100%;
+  border-radius: 14px;
+  background: var(--card-strong);
+  color: var(--ink);
+  border-color: var(--line);
+  padding: 14px;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  background: #f8f5ec;
+  padding: 8px;
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+.chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink);
+  font-size: 12px;
+}
+
+button.chip {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  border-color: var(--line);
+  padding: 0 10px;
+}
+
+.active-chip {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+@media (max-width: 800px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .site-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

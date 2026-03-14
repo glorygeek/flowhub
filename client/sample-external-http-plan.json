@@ -1,0 +1,44 @@
+{
+  "workflow_spec": {
+    "id": "sample-external-http-plan",
+    "name": "Sample external HTTP tool plan",
+    "inputs": {
+      "request_text": "Fetch local workflow metadata through the client sandbox"
+    },
+    "nodes": [
+      {
+        "id": "node_1",
+        "name": "Fetch sample workflow",
+        "skill_ref": "local.http-fetch",
+        "inputs": {
+          "external_tool": {
+            "kind": "http_request",
+            "method": "GET",
+            "url": "http://127.0.0.1:18765/sample-workflow.json",
+            "headers": {
+              "Accept": "application/json"
+            },
+            "response_format": "json",
+            "timeout_seconds": 10
+          }
+        }
+      }
+    ],
+    "edges": [],
+    "outputs": {
+      "result": "json"
+    },
+    "risk_level": "low"
+  },
+  "client_execution_guidance": {
+    "mode": "client_fetch_and_compose",
+    "ai_runtime_owner": "client",
+    "summary": "Execute a sandboxed local HTTP request.",
+    "steps": [
+      "Start a local static server on port 18765.",
+      "Run the client against this plan.",
+      "Inspect the returned external tool payload."
+    ],
+    "skill_targets": []
+  }
+}

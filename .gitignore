@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+client/.flowhub-cache/
+client/tmp-cache/
+
+# Rust/Tauri
+client/src-tauri/target/
+
+# Env/Secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+.claude/
+
+# Logs
+*.log
+frontend/.next-dev*.log
+
+# DB
+*.sqlite3
+*.db

@@ -1,0 +1,45 @@
+{
+  "workflow_spec": {
+    "id": "sample-plan-1",
+    "name": "Sample plan bundle",
+    "inputs": {
+      "request_text": "Analyze stock data and return a markdown summary"
+    },
+    "nodes": [
+      {
+        "id": "node_1",
+        "name": "Analyze stock data",
+        "skill_ref": "clawhub/us-stock-analysis",
+        "inputs": {
+          "ticker": "AAPL"
+        }
+      }
+    ],
+    "edges": [],
+    "outputs": {
+      "result": "markdown"
+    },
+    "risk_level": "low"
+  },
+  "client_execution_guidance": {
+    "mode": "client_fetch_and_compose",
+    "ai_runtime_owner": "client",
+    "summary": "Fetch the referenced skill metadata before local execution.",
+    "steps": [
+      "Pull the skill metadata from ClawHub.",
+      "Cache the payload locally.",
+      "Execute the local workflow runtime."
+    ],
+    "skill_targets": [
+      {
+        "name": "clawhub/us-stock-analysis",
+        "display_name": "Us Stock Analysis",
+        "source": "clawhub",
+        "source_slug": "us-stock-analysis",
+        "source_url": "https://clawhub.ai/api/v1/skills/us-stock-analysis",
+        "fetch_strategy": "clawhub_registry",
+        "required": true
+      }
+    ]
+  }
+}

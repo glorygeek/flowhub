@@ -1,0 +1,20 @@
+{
+  "name": "clawhub/us-stock-analysis",
+  "display_name": "Us Stock Analysis",
+  "summary": "Analyze US stock price action, market structure, and recent catalysts for a concise trading brief.",
+  "description": "Synthetic local registry payload for client runtime validation.",
+  "version": "0.1.0-mock",
+  "stats": {
+    "stars": 182,
+    "downloads": 9124,
+    "comments": 14
+  },
+  "owner": {
+    "handle": "clawhub"
+  },
+  "tags": {
+    "finance": true,
+    "stocks": true,
+    "analysis": true
+  }
+}
