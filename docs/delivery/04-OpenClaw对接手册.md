@@ -177,18 +177,28 @@ openclaw plugins install ./openclaw-plugin/internal-maintenance
 
 ```json5
 {
-  "flowhub-openclaw": {
-    "enabled": true,
-    "config": {
-      "apiBaseUrl": "http://127.0.0.1:8000/api/v1",
-      "apiKey": "dev-flowhub-key",
-      "timeoutMs": 20000,
-      "defaultExecutionMode": "remote",
-      "defaultOutputFormat": "markdown"
+  "plugins": {
+    "allow": ["flowhub-openclaw"],
+    "entries": {
+      "flowhub-openclaw": {
+        "enabled": true,
+        "config": {
+          "apiBaseUrl": "http://127.0.0.1:8000/api/v1",
+          "apiKey": "dev-flowhub-key",
+          "timeoutMs": 20000,
+          "defaultExecutionMode": "remote",
+          "defaultOutputFormat": "markdown"
+        }
+      }
     }
   }
 }
 ```
+
+说明：
+
+- 当前 OpenClaw CLI 版本下，建议显式配置 `plugins.allow`，避免未信任插件自动加载告警。
+- 若只做隔离联调，可使用独立 profile，例如：`openclaw --profile flowhub-test plugins install ./openclaw-plugin`
 
 ## 8. Agent 绑定建议
 
