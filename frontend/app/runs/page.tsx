@@ -227,7 +227,7 @@ function RunsPageContent() {
       if (nextStatus) {
         params.set("status", nextStatus);
       }
-      const data = await apiFetch<RunRequest[]>(`/run-requests/?${params.toString()}`);
+      const data = await apiFetch<RunRequest[]>(`/run-requests?${params.toString()}`);
       setItems(data);
       setSelectedRequestId((current) => {
         if (current && data.some((item) => item.id === current)) {

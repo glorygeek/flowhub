@@ -50,15 +50,30 @@ def resolve_ai_runtime(settings: Settings) -> AIRuntimeConfig:
 
 def can_use_ai(settings: Settings) -> bool:
     runtime = resolve_ai_runtime(settings)
-    return bool(runtime.enabled and runtime.base_url and runtime.model and runtime.api_key)
+    return bool(runtime.enabled and runtime.base_url and runtime.model and (runtime.api_key or is_local_ollama(runtime)))
 
 
 def detect_provider(runtime: AIRuntimeConfig) -> str:
     base_url = runtime.base_url.lower()
     model = runtime.model.lower()
+    if "11434" in base_url or "ollama" in base_url:
+        return "ollama"
     if "deepseek.com" in base_url or model.startswith("deepseek-"):
         return "deepseek"
     return "openai-compatible"
+
+
+def is_local_ollama(runtime: AIRuntimeConfig) -> bool:
+    return detect_provider(runtime) == "ollama"
+
+
+def build_chat_endpoint(runtime: AIRuntimeConfig) -> str:
+    base_url = runtime.base_url.rstrip("/")
+    if is_local_ollama(runtime):
+        if base_url.endswith("/v1"):
+            return f"{base_url}/chat/completions"
+        return f"{base_url}/v1/chat/completions"
+    return f"{base_url}/chat/completions"
 
 
 def build_chat_payload(
@@ -108,11 +123,12 @@ def request_ai_chat(
         model=model,
         max_tokens=max_tokens,
     )
-    endpoint = f"{runtime.base_url.rstrip('/')}/chat/completions"
+    endpoint = build_chat_endpoint(runtime)
     headers = {
-        "Authorization": f"Bearer {runtime.api_key}",
         "Content-Type": "application/json",
     }
+    if runtime.api_key:
+        headers["Authorization"] = f"Bearer {runtime.api_key}"
 
     try:
         with httpx.Client(timeout=runtime.timeout_seconds) as client:
@@ -208,6 +224,9 @@ def extract_reasoning_content(payload: dict[str, Any]) -> str | None:
                 text_parts.append(item["text"])
         if text_parts:
             return "\n".join(text_parts)
+    reasoning = message.get("reasoning")
+    if isinstance(reasoning, str) and reasoning.strip():
+        return reasoning
     return None
 
 

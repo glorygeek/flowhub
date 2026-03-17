@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from app.core.config import Settings
 from app.schemas.planner import CommunicationPreview, PlannerAssistantResponse
 from app.services.ai_assistant import AIActionabilityAssessment
-from app.services.ai_gateway import AIChatResult, build_chat_payload, resolve_ai_runtime
+from app.services.ai_gateway import AIChatResult, build_chat_endpoint, build_chat_payload, resolve_ai_runtime
 from app.services.clawhub_sync import SkillSyncResult, _build_skill_payload, _should_refresh_detail
 from app.services.planner_ai import AIPlanningResult, AIWorkflowStep
 
@@ -1127,6 +1127,8 @@ def test_planner_returns_usage_guidance_for_non_actionable_message(client):
     assert body["assistant_response"]["headline"]
     assert body["assistant_response"]["reply_text"]
     assert isinstance(body["assistant_response"]["usage_steps"], list)
+    assert body["client_install_guidance"] is None
+    assert body["workflow_summary"] is None
 
 
 def test_ai_chat_endpoint_uses_generic_gateway(client, monkeypatch):
@@ -1178,6 +1180,24 @@ def test_ai_gateway_builds_deepseek_v32_thinking_payload():
 
     assert payload["model"] == "deepseek-chat"
     assert payload["thinking"] == {"type": "enabled"}
+
+
+def test_ai_gateway_accepts_local_ollama_without_api_key():
+    settings = Settings(
+        ai_enabled=True,
+        ai_base_url="http://172.22.80.1:11434",
+        ai_model="qwen3:8b",
+        ai_api_key="",
+        ai_thinking_enabled=False,
+    )
+    runtime = resolve_ai_runtime(settings)
+    payload = build_chat_payload(
+        runtime=runtime,
+        messages=[{"role": "user", "content": "hello"}],
+    )
+
+    assert payload["model"] == "qwen3:8b"
+    assert build_chat_endpoint(runtime) == "http://172.22.80.1:11434/v1/chat/completions"
 
 
 def test_planner_can_use_ai_actionability_analysis(client, monkeypatch):
@@ -1241,6 +1261,8 @@ def test_planner_and_telemetry_chain(client, monkeypatch):
     body = plan_resp.json()
     assert "workflow_spec" in body
     assert "assistant_response" in body
+    assert body["client_install_guidance"]["mode"] == "client_managed"
+    assert body["client_install_guidance"]["status"] == "not_required"
     assert len(body["workflow_spec"]["nodes"]) >= 1
     assert body["workflow_spec"]["nodes"][0]["name"] == "analysis"
     assert body["workflow_spec"]["nodes"][0]["skill_ref"] == "analysis.execute"
@@ -1413,11 +1435,21 @@ def test_run_request_prefers_single_skill_when_one_skill_can_cover_request(clien
     assert body["assistant_response"]["template_key"] == "free_single_skill_plan"
     assert body["communication_preview"]["template_key"] == "free_single_skill_plan"
     assert len(body["selected_skills"]) == 1
+    assert body["client_install_guidance"]["mode"] == "client_managed"
+    assert body["client_install_guidance"]["status"] == "deferred"
+    assert body["client_install_guidance"]["items"]
+    assert body["client_install_guidance"]["items"][0]["install_command"].startswith("clawhub install ")
     assert "stock" in body["selected_skills"][0]["display_name"].lower()
     assert body["selected_skills"][0]["quality_tier"]
     assert isinstance(body["selected_skills"][0]["trust_signals"], list)
     assert "stock" in body["workflow_spec"]["nodes"][0]["skill_ref"].lower()
     assert body["workflow_spec"]["nodes"][-1]["skill_ref"] == "output.export"
+    assert body["workflow_summary"]["plan_type"] == "single_skill"
+    assert body["workflow_summary"]["formula"].startswith("1#")
+    assert "output.export" in body["workflow_summary"]["formula"]
+    assert len(body["workflow_summary"]["steps"]) == len(body["workflow_spec"]["nodes"])
+    assert body["workflow_summary"]["safety_guidance"]
+    assert any("flowhub-skill-vetter" in item for item in body["workflow_summary"]["safety_guidance"])
     assert any("single indexed skill" in item.lower() for item in body["decision_log"])
 
 
@@ -1603,6 +1635,12 @@ def test_run_request_intake_and_listing(client):
     assert body["workflow_spec"]["workflow_id"] is not None
     assert len(body["decision_log"]) >= 3
     assert len(body["selected_skills"]) >= 1
+    assert body["client_install_guidance"]["mode"] == "client_managed"
+    assert body["client_install_guidance"]["status"] == "deferred"
+    assert body["client_install_guidance"]["items"]
+    assert body["workflow_summary"]["formula"].startswith("1#")
+    assert body["workflow_summary"]["steps"]
+    assert body["workflow_summary"]["handoff_steps"]
     assert body["assistant_response"]["headline"]
     assert body["communication_preview"]["status"] == "pending_confirmation"
 
@@ -1616,10 +1654,19 @@ def test_run_request_intake_and_listing(client):
     assert confirmed_body["communication_preview"]["status"] == "ready_to_send"
     assert confirmed_body["selected_skills"][0]["display_name"]
     assert confirmed_body["selected_skills"][0]["quality_tier"]
+    assert confirmed_body["client_install_guidance"]["mode"] == "client_managed"
+    assert confirmed_body["client_install_guidance"]["status"] == "deferred"
+    assert confirmed_body["client_install_guidance"]["items"]
+    assert confirmed_body["workflow_summary"]["formula"].startswith("1#")
+    assert confirmed_body["workflow_summary"]["handoff_steps"]
 
     listed = client.get("/api/v1/run-requests/", headers=_headers())
     assert listed.status_code == 200
     assert listed.json()[0]["goal"] == payload["goal"]
+
+    listed_without_trailing_slash = client.get("/api/v1/run-requests?limit=10", headers=_headers())
+    assert listed_without_trailing_slash.status_code == 200
+    assert listed_without_trailing_slash.json()[0]["goal"] == payload["goal"]
 
     queued_only = client.get("/api/v1/run-requests/?status=queued&limit=10", headers=_headers())
     assert queued_only.status_code == 200

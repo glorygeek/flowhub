@@ -6,9 +6,11 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.models.common import ExecutionMode
 from app.schemas.planner import (
     ClientExecutionGuidance,
+    ClientInstallGuidance,
     CommunicationPreview,
     PlannerAssistantResponse,
     SkillRecommendation,
+    WorkflowSummary,
 )
 from app.schemas.workflow_spec import WorkflowSpec
 
@@ -82,6 +84,8 @@ class RunRequestPlanResponse(BaseModel):
     selected_skills: list[SkillRecommendation] = Field(default_factory=list)
     communication_preview: CommunicationPreview
     client_execution_guidance: ClientExecutionGuidance | None = None
+    client_install_guidance: ClientInstallGuidance | None = None
+    workflow_summary: WorkflowSummary | None = None
 
 
 class RunRequestConfirmResponse(BaseModel):
@@ -91,3 +95,5 @@ class RunRequestConfirmResponse(BaseModel):
     selected_skills: list[SkillRecommendation] = Field(default_factory=list)
     communication_preview: CommunicationPreview
     client_execution_guidance: ClientExecutionGuidance | None = None
+    client_install_guidance: ClientInstallGuidance | None = None
+    workflow_summary: WorkflowSummary | None = None

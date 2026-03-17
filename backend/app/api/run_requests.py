@@ -26,6 +26,8 @@ from app.services.planner_engine import (
     resolve_workflow_skill_recommendations,
 )
 from app.services.client_execution_guidance import build_client_execution_guidance
+from app.services.client_install_guidance import build_client_install_guidance
+from app.services.workflow_summary import build_workflow_summary
 
 router = APIRouter(prefix="/run-requests", tags=["run-requests"])
 
@@ -49,6 +51,7 @@ def build_next_steps(execution_mode: str, output_format: str) -> list[str]:
     return next_steps
 
 
+@router.post("", response_model=RunRequestPlanResponse, status_code=status.HTTP_201_CREATED, include_in_schema=False)
 @router.post("/", response_model=RunRequestPlanResponse, status_code=status.HTTP_201_CREATED)
 def create_run_request(
     payload: RunRequestCreate,
@@ -86,6 +89,8 @@ def create_run_request(
             selected_skills=[],
             communication_preview=plan.communication_preview,
             client_execution_guidance=None,
+            client_install_guidance=None,
+            workflow_summary=None,
         )
 
     credential_descriptors = [
@@ -131,6 +136,14 @@ def create_run_request(
     db.commit()
     db.refresh(record)
 
+    client_execution_guidance = build_client_execution_guidance(
+        workflow_spec=plan.workflow_spec,
+        selected_skills=plan.selected_skills,
+    )
+    client_install_guidance = build_client_install_guidance(
+        selected_skills=plan.selected_skills,
+    )
+
     return RunRequestPlanResponse(
         actionable=True,
         request=RunRequestRead.model_validate(record),
@@ -141,13 +154,18 @@ def create_run_request(
         assistant_response=plan.assistant_response,
         selected_skills=plan.selected_skills,
         communication_preview=plan.communication_preview,
-        client_execution_guidance=build_client_execution_guidance(
+        client_execution_guidance=client_execution_guidance,
+        client_install_guidance=client_install_guidance,
+        workflow_summary=build_workflow_summary(
             workflow_spec=plan.workflow_spec,
             selected_skills=plan.selected_skills,
+            assistant_response=plan.assistant_response,
+            client_execution_guidance=client_execution_guidance,
         ),
     )
 
 
+@router.get("", response_model=list[RunRequestRead], include_in_schema=False)
 @router.get("/", response_model=list[RunRequestRead])
 def list_run_requests(
     db: Session = Depends(get_db),
@@ -252,14 +270,26 @@ def confirm_run_request(request_id: int, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(record)
 
+    client_execution_guidance = build_client_execution_guidance(
+        workflow_spec=workflow_spec,
+        selected_skills=selected_skills,
+    )
+    client_install_guidance = build_client_install_guidance(
+        selected_skills=selected_skills,
+    )
+
     return RunRequestConfirmResponse(
         request=RunRequestRead.model_validate(record),
         workflow_spec=workflow_spec,
         assistant_response=assistant_response,
         selected_skills=selected_skills,
         communication_preview=communication_preview,
-        client_execution_guidance=build_client_execution_guidance(
+        client_execution_guidance=client_execution_guidance,
+        client_install_guidance=client_install_guidance,
+        workflow_summary=build_workflow_summary(
             workflow_spec=workflow_spec,
             selected_skills=selected_skills,
+            assistant_response=assistant_response,
+            client_execution_guidance=client_execution_guidance,
         ),
     )

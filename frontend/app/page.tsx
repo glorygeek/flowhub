@@ -327,6 +327,68 @@ export default function HomePage() {
 
               {isActionablePlan ? (
                 <>
+                  {result.workflow_summary ? (
+                    <div className="subpanel">
+                      <p className="eyebrow">Workflow Composition</p>
+                      <h4 style={{ margin: "4px 0 8px 0" }}>{result.workflow_summary.headline}</h4>
+                      <p style={{ marginTop: 0 }}>{result.workflow_summary.explanation}</p>
+                      <p className="small" style={{ marginBottom: 12 }}>
+                        Formula: {result.workflow_summary.formula}
+                      </p>
+                      <h5 style={{ marginBottom: 8 }}>Ordered Steps</h5>
+                      <ul className="plain-list">
+                        {result.workflow_summary.steps.map((item) => (
+                          <li key={`${item.index}-${item.skill_ref}`}>
+                            <strong>
+                              {item.index}. {item.display_name}
+                            </strong>{" "}
+                            ({item.skill_ref})
+                            <br />
+                            {item.role}
+                            <br />
+                            {item.summary}
+                            <br />
+                            Planning: {item.planning_status}
+                            {item.source_url ? (
+                              <>
+                                <br />
+                                <a href={item.source_url} target="_blank" rel="noreferrer">
+                                  Open Step Source
+                                </a>
+                              </>
+                            ) : null}
+                          </li>
+                        ))}
+                      </ul>
+                      <h5 style={{ marginBottom: 8 }}>Safety Guidance</h5>
+                      <ul className="plain-list">
+                        {result.workflow_summary.safety_guidance.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                      {result.workflow_summary.safety_review_items.length > 0 ? (
+                        <>
+                          <h5 style={{ marginBottom: 8 }}>Skills Requiring Attention</h5>
+                          <ul className="plain-list">
+                            {result.workflow_summary.safety_review_items.map((item) => (
+                              <li key={`${item.skill_ref}-${item.display_name}`}>
+                                <strong>{item.display_name}</strong> ({item.planning_status})
+                                <br />
+                                {item.note}
+                                {item.security_flags.length > 0 ? (
+                                  <>
+                                    <br />
+                                    {item.security_flags.join(" / ")}
+                                  </>
+                                ) : null}
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : null}
+
                   <div className="subpanel">
                     <div className="stack-header">
                       <h4 style={{ margin: 0 }}>Confirmation</h4>
@@ -424,6 +486,16 @@ export default function HomePage() {
                       <li key={item}>{item}</li>
                     ))}
                   </ul>
+                  {result.workflow_summary?.handoff_steps.length ? (
+                    <>
+                      <h5 style={{ marginBottom: 8 }}>Execution Handoff</h5>
+                      <ul className="plain-list">
+                        {result.workflow_summary.handoff_steps.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : null}
                   <h5 style={{ marginBottom: 8 }}>Fetch Targets</h5>
                   <ul className="plain-list">
                     {result.client_execution_guidance.skill_targets.map((item) => (
@@ -443,6 +515,63 @@ export default function HomePage() {
                       </li>
                     ))}
                   </ul>
+                </div>
+              ) : null}
+
+              {result.client_install_guidance ? (
+                <div className="subpanel">
+                  <h4 style={{ marginTop: 0 }}>Client Install Guidance</h4>
+                  <p style={{ marginTop: 0 }}>{result.client_install_guidance.summary}</p>
+                  <p className="small">
+                    Mode: {result.client_install_guidance.mode} | Status:{" "}
+                    {result.client_install_guidance.status} | Requested:{" "}
+                    {result.client_install_guidance.install_requested ? "yes" : "no"}
+                  </p>
+                  <ul className="plain-list">
+                    {result.client_install_guidance.steps.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  {result.client_install_guidance.items.length > 0 ? (
+                    <>
+                      <h5 style={{ marginBottom: 8 }}>Install Targets</h5>
+                      <ul className="plain-list">
+                        {result.client_install_guidance.items.map((item) => (
+                          <li
+                            key={`${item.name}-${item.source_slug || item.source_url || item.display_name}`}
+                          >
+                            <strong>{item.display_name}</strong> - {item.fetch_strategy}
+                            <br />
+                            {item.source}
+                            {item.source_slug ? ` / ${item.source_slug}` : ""}
+                            {item.install_command ? (
+                              <>
+                                <br />
+                                Install: <code>{item.install_command}</code>
+                              </>
+                            ) : null}
+                            {item.install_command_windows ? (
+                              <>
+                                <br />
+                                Windows: <code>{item.install_command_windows}</code>
+                              </>
+                            ) : null}
+                            {item.source_url ? (
+                              <>
+                                <br />
+                                <a href={item.source_url} target="_blank" rel="noreferrer">
+                                  Open Install Source
+                                </a>
+                              </>
+                            ) : null}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : null}
+                  <p className="small" style={{ marginBottom: 0 }}>
+                    {result.client_install_guidance.note}
+                  </p>
                 </div>
               ) : null}
 

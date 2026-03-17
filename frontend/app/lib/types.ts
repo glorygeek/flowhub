@@ -208,6 +208,58 @@ export type ClientExecutionGuidance = {
   skill_targets: ClientSkillTarget[];
 };
 
+export type ClientInstallTarget = {
+  name: string;
+  display_name: string;
+  source: string;
+  source_slug?: string | null;
+  source_url?: string | null;
+  fetch_strategy: string;
+  required: boolean;
+  install_command?: string | null;
+  install_command_windows?: string | null;
+};
+
+export type ClientInstallGuidance = {
+  mode: string;
+  install_requested: boolean;
+  status: string;
+  summary: string;
+  steps: string[];
+  items: ClientInstallTarget[];
+  note: string;
+};
+
+export type WorkflowSummaryStep = {
+  index: number;
+  skill_ref: string;
+  display_name: string;
+  role: string;
+  summary: string;
+  planning_status: string;
+  source_url?: string | null;
+};
+
+export type WorkflowSafetyReviewItem = {
+  skill_ref: string;
+  display_name: string;
+  planning_status: string;
+  security_flags: string[];
+  note: string;
+};
+
+export type WorkflowSummary = {
+  formula: string;
+  plan_type: string;
+  headline: string;
+  explanation: string;
+  steps: WorkflowSummaryStep[];
+  usage_steps: string[];
+  safety_guidance: string[];
+  handoff_steps: string[];
+  safety_review_items: WorkflowSafetyReviewItem[];
+};
+
 export type AssistantResponse = {
   template_key: string;
   headline: string;
@@ -325,6 +377,8 @@ export type RunRequestPlanResponse = {
   selected_skills: SkillRecommendation[];
   communication_preview: CommunicationPreview;
   client_execution_guidance?: ClientExecutionGuidance | null;
+  client_install_guidance?: ClientInstallGuidance | null;
+  workflow_summary?: WorkflowSummary | null;
   intake_summary: {
     target_count: number;
     credential_count: number;
@@ -340,4 +394,6 @@ export type RunRequestConfirmResponse = {
   selected_skills: SkillRecommendation[];
   communication_preview: CommunicationPreview;
   client_execution_guidance?: ClientExecutionGuidance | null;
+  client_install_guidance?: ClientInstallGuidance | null;
+  workflow_summary?: WorkflowSummary | null;
 };
