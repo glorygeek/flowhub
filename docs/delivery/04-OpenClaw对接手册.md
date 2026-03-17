@@ -34,7 +34,7 @@
 
 - 声明插件基本信息
 - 声明可配置项
-- 指定 Skill 目录
+- 指定客户侧默认主 Skill 目录
 
 ### 3.2 `index.js`
 
@@ -57,6 +57,7 @@
 
 - 处理“找相关 Skill / 比较候选 Skill”这类发现型问题
 - 只做可信 Skill 推荐，不直接触发远程安装
+- 当前保留在 Skill 库中，但不再作为客户侧默认主 Skill 挂入插件 manifest
 
 ### 3.5 `skills/flowhub-self-improvement/SKILL.md`
 
@@ -68,7 +69,36 @@
 
 ## 4. 提供的工具
 
-### 4.1 `flowhub_search_skills`
+当前口径：
+
+- `flowhub_handle_message` 是客户侧默认单入口
+- 其他工具主要保留为回退入口或调试入口
+
+### 4.1 `flowhub_handle_message`
+
+用途：
+
+- 处理首次访问介绍、安装说明、普通业务请求、补充上下文、确认执行
+- 这是客户侧默认优先工具
+
+输入：
+
+- `message`
+- `request_id`
+- `targets`
+- `credentials`
+- `output_format`
+- `execution_mode`
+- `user_notes`
+
+行为：
+
+- 首访/介绍类消息时，直接返回项目简介、功能说明、相关插件/Skill 清单和安装引导
+- 普通业务请求时，路由到 `POST /api/v1/run-requests/`
+- 明确确认且带真实 `request_id` 时，路由到 `POST /api/v1/run-requests/{id}/confirm`
+- 对客户侧来说，它应当是默认入口；只有在路由不可用时才退回显式计划/确认工具
+
+### 4.2 `flowhub_search_skills`
 
 用途：
 
@@ -89,11 +119,11 @@
   - source_url
   - ranking_reasons
 
-### 4.2 `flowhub_plan_command`
+### 4.3 `flowhub_plan_command`
 
 用途：
 
-- 在用户提出自动化需求后调用
+- 当 `flowhub_handle_message` 不可用或路由失败时，作为回退规划工具调用
 
 输入：
 
@@ -117,11 +147,11 @@
   - usage_steps
   - confirmation_prompt
 
-### 4.3 `flowhub_confirm_request`
+### 4.4 `flowhub_confirm_request`
 
 用途：
 
-- 在用户明确确认后调用
+- 当 `flowhub_handle_message` 不可用或路由失败时，作为回退确认工具调用
 
 输入：
 
@@ -135,18 +165,22 @@
   - request_status
   - communication_status
   - customer_reply
+  - client_execution_guidance
+  - client_install_guidance
 
 ## 5. 对话规则
 
 OpenClaw agent 应遵循以下规则：
 
 1. 优先在聊天中补齐必要上下文。
-2. 信息足够后，调用 `flowhub_plan_command`。
-3. 把返回的 workflow 方案和 Skill 说明回复给用户。
-4. 必须等待用户明确确认。
-5. 只有在用户确认后，才调用 `flowhub_confirm_request`。
+2. 首访、介绍、安装、规划、确认都优先调用 `flowhub_handle_message`。
+3. 只有在单入口路由不可用时，才调用 `flowhub_plan_command` 或 `flowhub_confirm_request`。
+4. 把返回的 workflow 方案和 Skill 说明回复给用户。
+5. 必须等待用户明确确认。
 6. 不自动代替用户确认。
 7. 不在聊天中回显凭据原文。
+8. FlowHub 只返回安装指导，不代替任意 OpenClaw 客户端执行本地安装。
+9. 只有当用户明确提出“下载 / 安装”时，才由当前 OpenClaw 客户端按本地配置自行处理。
 
 ## 6. 插件安装
 
@@ -199,6 +233,25 @@ openclaw plugins install ./openclaw-plugin/internal-maintenance
 
 - 当前 OpenClaw CLI 版本下，建议显式配置 `plugins.allow`，避免未信任插件自动加载告警。
 - 若只做隔离联调，可使用独立 profile，例如：`openclaw --profile flowhub-test plugins install ./openclaw-plugin`
+- 可直接复用模板：
+  - [openclaw.local.sample.jsonc](/mnt/f/tool/FlowHub/openclaw-plugin/examples/openclaw.local.sample.jsonc)
+  - [openclaw.vps.sample.jsonc](/mnt/f/tool/FlowHub/openclaw-plugin/examples/openclaw.vps.sample.jsonc)
+
+### 7.1 Gateway 最小推荐配置
+
+建议至少显式写出：
+
+```json5
+{
+  "gateway": {
+    "mode": "local",
+    "bind": "loopback",
+    "port": 18789
+  }
+}
+```
+
+如果默认端口被占用，可切换到其他本地端口，例如 `19089`。
 
 ## 8. Agent 绑定建议
 
@@ -261,7 +314,22 @@ call flowhub_confirm_request
 ### Agent 最终回复
 
 ```text
-已收到命令，工作流已进入待执行状态，后续将把结果继续回到当前会话。
+已收到命令，工作流已进入已确认状态。
+如需本地下载或安装，请在当前 OpenClaw 客户端明确发送下载/安装指令后继续。
+```
+
+### 用户明确提出安装时的回复示例
+
+```text
+方案已确认（Request ID: 5）。
+当前会话已经明确提出安装/下载意图。请由当前 OpenClaw 客户端按本地配置自行安装所需 Skill。
+
+客户端安装方式：
+1. 通用命令：clawhub install us-stock-analysis
+   Windows 命令：clawhub.cmd install us-stock-analysis
+   Skill 地址：https://clawhub.ai/api/v1/skills/us-stock-analysis
+
+安装完成后，再由当前客户端按本地环境继续执行，不由 FlowHub 服务端代装。
 ```
 
 ## 10. 与 FlowHub 后端的接口关系
@@ -279,6 +347,12 @@ FlowHub Backend 负责：
 - 工作流组合
 - 消息内容生成
 - 状态推进
+- 客户端安装指导生成
+
+OpenClaw 客户端负责：
+
+- 按用户明确指令执行本地插件/Skill 安装
+- 按本地环境决定是否继续执行
 
 ## 11. 联调建议
 

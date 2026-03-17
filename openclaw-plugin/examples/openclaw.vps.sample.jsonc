@@ -1,0 +1,70 @@
+{
+  "agents": {
+    "list": [
+      {
+        "id": "flowhub",
+        "name": "FlowHub",
+        "workspace": "~/.openclaw/workspace-flowhub",
+        "tools": {
+          "allow": ["flowhub-openclaw"]
+        }
+      }
+    ],
+    "defaults": {
+      "model": {
+        "primary": "moonshot/kimi-k2.5"
+      },
+      "models": {
+        "moonshot/kimi-k2.5": {
+          "params": {
+            "temperature": 1
+          }
+        }
+      },
+      "compaction": {
+        "mode": "safeguard"
+      }
+    }
+  },
+  "tools": {
+    "allow": ["flowhub-openclaw"]
+  },
+  "gateway": {
+    "mode": "local",
+    "bind": "loopback",
+    "port": 18789,
+    "auth": {
+      "mode": "token",
+      "token": "replace-with-random-token"
+    }
+  },
+  "plugins": {
+    "allow": ["flowhub-openclaw"],
+    "entries": {
+      "flowhub-openclaw": {
+        "enabled": true,
+        "config": {
+          "apiBaseUrl": "https://your-flowhub-domain.example.com/api/v1",
+          "apiKey": "replace-with-flowhub-api-key",
+          "timeoutMs": 20000,
+          "defaultExecutionMode": "remote",
+          "defaultOutputFormat": "markdown"
+        }
+      }
+    }
+  },
+  "bindings": [
+    {
+      "match": {
+        "channel": "telegram"
+      },
+      "agentId": "flowhub"
+    }
+  ],
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  }
+}

@@ -19,6 +19,7 @@ Monorepo for FlowHub MVP:
 - [docs/delivery/08-基线提交建议.md](/mnt/f/tool/FlowHub/docs/delivery/08-%E5%9F%BA%E7%BA%BF%E6%8F%90%E4%BA%A4%E5%BB%BA%E8%AE%AE.md): 首个基线提交建议
 - [docs/delivery/09-发布版本与标签方案.md](/mnt/f/tool/FlowHub/docs/delivery/09-%E5%8F%91%E5%B8%83%E7%89%88%E6%9C%AC%E4%B8%8E%E6%A0%87%E7%AD%BE%E6%96%B9%E6%A1%88.md): 版本号、分支与 git tag 建议
 - [docs/delivery/10-首轮上线参数清单.md](/mnt/f/tool/FlowHub/docs/delivery/10-%E9%A6%96%E8%BD%AE%E4%B8%8A%E7%BA%BF%E5%8F%82%E6%95%B0%E6%B8%85%E5%8D%95.md): 首轮生产环境参数核对表
+- [docs/delivery/12-OpenClaw运维速查卡.md](/mnt/f/tool/FlowHub/docs/delivery/12-OpenClaw%E8%BF%90%E7%BB%B4%E9%80%9F%E6%9F%A5%E5%8D%A1.md): OpenClaw 初始化、启动、验收与排障速查
 
 ## Quick start
 

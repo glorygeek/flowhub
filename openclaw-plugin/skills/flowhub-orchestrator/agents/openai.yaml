@@ -1,4 +1,4 @@
 interface:
   display_name: "FlowHub Orchestrator"
   short_description: "Receive user needs and orchestrate trusted FlowHub workflows."
-  default_prompt: "Use $flowhub-orchestrator to receive a user request, prioritize trusted FlowHub skills, wait for confirmation, and return the reply in the same chat."
+  default_prompt: "Use $flowhub-orchestrator as the single FlowHub chat entrypoint. For onboarding, install questions, first-contact messages, workflow planning, and confirmation, call flowhub_handle_message first, then reuse FlowHub's returned reply in the same chat."

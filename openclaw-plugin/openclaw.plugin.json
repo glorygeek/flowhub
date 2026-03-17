@@ -1,9 +1,9 @@
 {
   "id": "flowhub-openclaw",
   "name": "FlowHub OpenClaw Bridge",
-  "description": "Expose FlowHub planning and confirmation tools to an OpenClaw agent.",
+  "description": "Expose a single FlowHub chat entrypoint plus fallback tools so an OpenClaw agent can handle onboarding, install guidance, workflow planning, and confirmation through FlowHub.",
   "version": "0.1.0",
-  "skills": ["skills/flowhub-orchestrator", "skills/flowhub-skill-discovery"],
+  "skills": ["skills/flowhub-orchestrator"],
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
